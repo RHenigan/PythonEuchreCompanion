@@ -76,6 +76,7 @@ def main():
     for i in range(5):
         print("P1 Card {0}: {1} of {2}".format(i+1, P1Hand[i].val, P1Hand[i].suit))
 
+    cardsList[:] = []
     print("Player 1 play a card")
     P1T1 = Cards()
     print("Player 1 played: {0} of {1} this turn".format(P1T1.val, P1Hand[i].suit))
