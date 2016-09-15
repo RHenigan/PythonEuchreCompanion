@@ -54,11 +54,13 @@ def getData(uid):
             return data
     
 class Cards():
-    def __init__(self):
-        self.uid = getUID()
-        data = getData(self.uid)
-        self.suit = suitsArray[data[3]]
-        self.val = data[2]    
+    def __init__(self, uid, val, suit):
+        self.uid = uid
+        self.suit = suit
+        self.val = val  
+    def retUID():
+        return self.uid
+
 
 def main():
     print("Player 1 Hand one card at a time")
@@ -68,18 +70,38 @@ def main():
     P1Hand = []
 
     for i in range(5):
-        x = Cards()
-        P1Hand.append(x)
-        print("P1 Card {0}: {1} of {2}".format(i+1, P1Hand[i].val, P1Hand[i].suit))
-        raw_input("Enter for next card")
+        if i is 0:
+            uid = getUID()
+            data = getData(uid)
+            x = Cards(uid, data[2], suitsArray[data[3]])
+            P1Hand.append(x)
+            print("Card {0} Recorded".format(i + 1))
+            #print("P1 Card {0}: {1} of {2}".format(i+1, P1Hand[i].val, P1Hand[i].suit))
+            #raw_input("Enter for next card")
+        else:
+            while True:
+                uid = getUID()
+                if uid is P1Hand[i-1].retUID():
+                    print("Move to next Card")
+                    continue
+                else:
+                    data = getData(uid)
+                    x = Cards(uid, data[2], suitsArray[data[3]])
+                    P1Hand.append(x)
+                    print("Card {0} Recorded".format(i + 1))
+                    #print("P1 Card {0}: {1} of {2}".format(i+1, P1Hand[i].val, P1Hand[i].suit))
+                    #raw_input("Enter for next card")
+                    break
+
 
     for i in range(5):
         print("P1 Card {0}: {1} of {2}".format(i+1, P1Hand[i].val, P1Hand[i].suit))
 
     cardsList[:] = []
-    print("Player 1 play a card")
-    P1T1 = Cards()
-    print("Player 1 played: {0} of {1} this turn".format(P1T1.val, P1Hand[i].suit))
+
+    #print("Player 1 play a card")
+    #P1T1 = Cards()
+    #print("Player 1 played: {0} of {1} this turn".format(P1T1.val, P1Hand[i].suit))
 
 
 main()
