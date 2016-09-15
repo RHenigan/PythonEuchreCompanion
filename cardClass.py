@@ -6,6 +6,7 @@ import sys
 import Adafruit_PN532 as PN532
 
 suitsArray = ["", "hearts", "spades", "diamonds", "clubs"]
+cardsList = []
 
 CS = 'P8_7'
 MOSI = 'P8_8'
@@ -21,14 +22,24 @@ print('Found PN532 with firmware version: {0}.{1}'.format(ver, rev))
 
 pn532.SAM_configuration()
 
+def checkDups(uid):
+    if uid in cardsList:
+        print("card exists")
+        return True
+    else:
+        print("new card read")
+        cardsList.append(uid)
+        return False
+
 def getUID():
     print("Reading UID.....")
     while True:
         uid = pn532.read_passive_target()
         
         if uid is not None:
-            print("UID Read succesful")
-            return uid
+            if checkDups(uid) is False:
+                print("UID Read succesful")
+                return uid
 
 def getData(uid):
     print("Reading Data.....")
