@@ -70,30 +70,14 @@ def main():
     P1Hand = []
 
     for i in range(5):
-        if i is 0:
-            uid = getUID()
-            data = getData(uid)
-            x = Cards(uid, data[2], suitsArray[data[3]])
-            P1Hand.append(x)
-            print("Card {0} Recorded".format(i + 1))
+        uid = getUID()
+        data = getData(uid)
+        x = Cards(uid, data[2], suitsArray[data[3]])
+        P1Hand.append(x)
+        print("Card {0} Recorded".format(i + 1))
             #print("P1 Card {0}: {1} of {2}".format(i+1, P1Hand[i].val, P1Hand[i].suit))
             #raw_input("Enter for next card")
-        else:
-            while True:
-                uid = getUID()
-                if uid is P1Hand[i-1].retUID():
-                    print("Move to next Card")
-                    continue
-                else:
-                    data = getData(uid)
-                    x = Cards(uid, data[2], suitsArray[data[3]])
-                    P1Hand.append(x)
-                    print("Card {0} Recorded".format(i + 1))
-                    #print("P1 Card {0}: {1} of {2}".format(i+1, P1Hand[i].val, P1Hand[i].suit))
-                    #raw_input("Enter for next card")
-                    break
-
-
+        
     for i in range(5):
         print("P1 Card {0}: {1} of {2}".format(i+1, P1Hand[i].val, P1Hand[i].suit))
 
