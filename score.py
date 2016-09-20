@@ -19,7 +19,7 @@ def score_round(score_A, score_B, tricks_A, tricks_B)
             score_A = score_A + 1 #Team A called trump, won round
         else:
             score_A = score_A + 2 #Team A Euchred Team B
-    else if tricks_A >=3:
+    else if tricks_B >=3:
         if call_B = True:
             score_B = score_B + 1 #Team B called trump, won round
         else:
