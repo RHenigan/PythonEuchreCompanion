@@ -137,6 +137,8 @@ def main():
             cardsList[:] = []
             player(i)
     
+   #place turns in loop, check score. If score = 10, exit loop
+
     #default Player 1 leads deal
     print("PLAYER " i " SCAN CARD IN QUESTION")
     #Dealer SCAN the card
