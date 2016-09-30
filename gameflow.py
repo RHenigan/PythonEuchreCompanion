@@ -97,11 +97,9 @@ def player(i):
     else:
         i = 1 #increasing values to allow players to be dynamic
 
-def callTrump():
-        print("SCAN SUIT TO CALL TRUMP")
-        scan()
+def readKey():
+        #read keypad press
         
-
 def assignVal():
 #write to card - value of card
 
@@ -113,6 +111,12 @@ def renig():
 def compare():
 #compares suit and value of two cards
 
+def printPlayer():
+        
+
+def printAll():
+        
+
 def score():
 
 #main game
@@ -123,7 +127,7 @@ def main():
 
     for num in range(0,4)
             #Players SCAN cards
-            print("PLAYER " i " SCAN CARDS")
+            printPlayer("PLAYER " i " SCAN CARDS")
             for k in range(5)
                 scan()
                 appendHand()
@@ -151,25 +155,25 @@ def main():
                             #if call callTrump() playRound()
                             #else 'screw the dealer'
                             player(i)
-                            print("DEALER.. CALL TRUMP")
-                            #Player 1 SCAN card to call trump
+                            printPlayer("DEALER.. CALL TRUMP")
+                            #Player 1 keypad press to call trump
                             #Assign trump
     
     player(i)
-    print("PLAYER " i " TURN")
+    printPlayer("PLAYER " i " TURN")
     #Player 2 lead - SCAN
     #Assign lead
     #player card values for round conditions
 
-    print("PLAYER " i " TURN")
+    printAll("PLAYER " i " TURN")
     #Player 3 play - SCAN
     #check if renig
     player(i)
-    print("PLAYER " i " TURN")
+    printAll("PLAYER " i " TURN")
     #Player 4 play - SCAN
     #check if renig
     player(i)
-    print("PLAYER " i " TURN")
+    printAll("PLAYER " i " TURN")
     #Player 1 play - SCAN
     #check if renig
     player(i)
