@@ -142,19 +142,20 @@ class lcd:
 
         for i in range(LCD_WIDTH):
             self.lcd_byte(ord(message[i]), LCD_CHR)
-                
-    def lcd_custom_str(self, message, number, custom, line):
+            
+    
+    #TODO remake or make another custom string            
+    def lcd_custom_str(self, message, list, line):
         # Send string to display
 
         message = message.ljust(LCD_WIDTH, " ")
 
         self.lcd_byte(line, LCD_CMD)
 
+        j = 0
         for i in range(LCD_WIDTH):
-            if message[i] is "#":
-                self.lcd_byte(ord(number), LCD_CHR)
+            if message[i] is "*":
+                self.lcd_byte(ord(list[j]), LCD_CHR)
+                j = j+1
             else:
-                if message[i] is "*":
-                    self.lcd_byte(ord(custom), LCD_CHR)
-                else:
-                    self.lcd_byte(ord(message[i]), LCD_CHR)
+                self.lcd_byte(ord(message[i]), LCD_CHR)

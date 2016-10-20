@@ -25,57 +25,63 @@ print('Found PN532 with firmware version: {0}.{1}'.format(ver, rev))
 
 #configure
 pn532.SAM_configuration()
-
-
-#get cards unique ID
-def getUID():
-    print("Reading UID.....")
-    while True:
-        uid = pn532.read_passive_target()
-        
-        if uid is not None:
-            print("UID Read succesful")
-            return uid
-
-#get cards data
-def getData(uid):
-    #default card val to 0
-    cardVal = '0'
-    print("Reading Data.....")
-    while True:
-        if not pn532.mifare_classic_authenticate_block(uid, 4, PN532.MIFARE_CMD_AUTH_B, [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]):
-            print("Failed to authenticate block 4!")
-        
-        data = pn532.mifare_classic_read_block(4)
-
-        if data is not None:
-            #return data as an array data[2] = val data[3] = suit
-            print("data read successful")
-            return data
-        else:
-            #else try again
-            uid = getUID()
     
 class Cards():
     #initialize a card
     def __init__(self):
-        #get uid
-        self.uid = getUID()
-        #get data
-        data = getData(self.uid)
+        #get data and UID
+        self.getUID()
+        self.getData()
         #get suit
-        self.suit = suitsArray[data[3]]
+        self.suit = suitsArray[self.data[3]]
         #get card val
-        self.val = '0'
-        if data[2] is 9:
+        if self.data[2] is 9:
             self.val = '9'
-        if data[2] is 10:
+        elif self.data[2] is 10:
             self.val = 'T'
-        if data[2] is 11:
+        elif self.data[2] is 11:
             self.val = 'J'
-        if data[2] is 12:
+        elif self.data[2] is 12:
             self.val = 'Q'
-        if data[2] is 13:
+        elif self.data[2] is 13:
             self.val = 'K'
-        if data[2] is 14:
+        elif self.data[2] is 14:
             self.val = 'A'
+        else:
+            self.val = '0'
+            
+    #get cards unique ID
+    def getUID(self):
+        print("Reading UID.....")
+        while True:
+            Tempuid = pn532.read_passive_target()
+        
+            if Tempuid is not None:
+                print("UID Read succesful")
+                self.uid = Tempuid
+                return
+                
+    #get cards data
+    def getData(self):
+        print("Reading Data.....")
+        while True:
+            if not pn532.mifare_classic_authenticate_block(self.uid, 4, PN532.MIFARE_CMD_AUTH_B, [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]):
+                print("Failed to authenticate block 4!")
+        
+            Tempdata = pn532.mifare_classic_read_block(4)
+
+            if Tempdata is not None:
+                #return data as an array data[2] = val data[3] = suit
+                print("data read successful")
+                self.data = Tempdata
+                return
+            else:
+                self.getUID()
+            
+            
+            
+            
+            
+            
+            
+        
