@@ -1,0 +1,55 @@
+create card:
+x = Cards()
+Deck.append(x)
+
+read value & suit:
+Deck[index].val, Deck[index].suit
+return char
+
+
+def scan():
+	x=cards()
+	appendHand(x)
+
+appendHand(x):
+	if i = 1:
+		P1Hand.append(x)
+
+#i = players turn
+def scan(i):
+test = True
+	While test is True:
+		uid = getUID()
+		data = getData(uid)
+		test = compareHand(i, uid)
+		if test is Flase:
+			print Error
+
+def compareHand(i, uid):
+	for Cards in P1Hand:
+		if uid = P1Hand[Cards].uid:
+			return true
+		else:
+			return false
+
+pass/call then scan hands (get rid of kitty)
+
+
+def printAll(string, string)
+if print one line: printAll(string, "")
+
+array.remove()
+
+def printDisplay(i, message, message, array, []) 
+bool = flag for custom char
+arrays for custom char need to be passed
+
+if array is not Empty:
+	P1Disp.lcd_custom_str(message2, [], LCD_LINE_1)
+	P1Disp.lcd_string(message1, LCD_LINE_2)
+
+
+def clearDisp
+def clearAll
+	P1Disp.lcd_byte(0x01, LCD_CMD)
+
