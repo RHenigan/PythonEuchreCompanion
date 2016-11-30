@@ -10,32 +10,33 @@ GPIO.setup("P8_16", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Y
 GPIO.setup("P8_17", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Z
 GPIO.setup("P8_18", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #P3 X
 GPIO.setup("P8_19", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Y
-GPIO.setup("P8_20", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Z
-GPIO.setup("P8_21", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #P4 X
-GPIO.setup("P8_22", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Y
-GPIO.setup("P8_23", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Z
-GPIO.setup("P8_24", GPIO.OUT)                             #P1 Turn
-GPIO.setup("P8_25", GPIO.OUT)                             #P2 Turn
-GPIO.setup("P8_26", GPIO.OUT)                             #P3 Turn
-GPIO.setup("P8_27", GPIO.OUT)                             #P4 Turn
-GPIO.setup("P8_28", GPIO.OUT)                             #P1 Deal
-GPIO.setup("P8_29", GPIO.OUT)                             #P2 Deal
-GPIO.setup("P8_30", GPIO.OUT)                             #P3 Deal
-GPIO.setup("P8_31", GPIO.OUT)                             #P4 Deal
+GPIO.setup("P8_27", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Z
+GPIO.setup("P8_28", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #P4 X
+GPIO.setup("P8_29", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Y
+GPIO.setup("P8_30", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Z
+GPIO.setup("P8_39", GPIO.OUT)                             #P1 Turn
+GPIO.setup("P8_40", GPIO.OUT)                             #P2 Turn
+GPIO.setup("P9_23", GPIO.OUT)                             #P3 Turn
+GPIO.setup("P9_25", GPIO.OUT)                             #P4 Turn
+GPIO.setup("P9_27", GPIO.OUT)                             #P1 Deal
+GPIO.setup("P9_28", GPIO.OUT)                             #P2 Deal
+GPIO.setup("P9_29", GPIO.OUT)                             #P3 Deal
+GPIO.setup("P9_30", GPIO.OUT)                             #P4 Deal
+GPIO.setup("P9_31", GPIO.OUT)				  #Extra
 
 #Player 1 ans
 P1Ans = ["P8_12", "P8_13", "P8_14"]
 #Player 2 Col
 P2Ans = ["P8_15", "P8_16", "P8_17"]
 #Player 3 Col
-P3Ans = ["P8_18", "P8_19", "P8_20"]
+P3Ans = ["P8_18", "P8_19", "P8_27"]
 #Player 4 Col
-P4Ans = ["P8_21", "P8_22", "P8_23"]
+P4Ans = ["P8_28", "P8_29", "P8_30"]
 
 #Turn LED Indicator
-turnIndicator = ["P8_24", "P8_25", "P8_26", "P8_27"]
+turnIndicator = ["P8_39", "P8_40", "P9_23", "P9_25"]
 #Deal LED Indicator
-dealIndicator = ["P8_28", "P8_29", "P8_30", "P8_31"]
+dealIndicator = ["P9_27", "P9_28", "P9_29", "P9_30"]
 
 #heart, spade, diamond, club
 suitsArray = [unichr(0), unichr(0), unichr(1), unichr(2), unichr(3)]
@@ -48,15 +49,19 @@ class keypad():
     def getPlayer(self):
         if self.PlayerSel is 1:
             self.activePlayer =  P1Ans
+            print ("P1 selected")
             return
         elif self.PlayerSel is 2:
             self.activePlayer =  P2Ans
+            print ("P2 selected")
             return
         elif self.PlayerSel is 3:
             self.activePlayer =  P3Ans
+            print ("P3 Selected")
             return
         elif self.PlayerSel is 4:
             self.activePlayer =  P4Ans
+            Print("P4 selected")
             return
         else:
             print 'no player selected'
@@ -129,10 +134,6 @@ class keypad():
             
     def getResponse(self):
         print 'get response called'
-        #Get active player
-        X = GPIO.input(self.activePlayer[0])
-        Y = GPIO.input(self.activePlayer[1])
-        Z = GPIO.input(self.activePlayer[2])
     
         #self.setTurn()
         #TODO add WDT
@@ -142,25 +143,25 @@ class keypad():
             #Initialize Keypad Matrix
             GPIO.output("P8_11", GPIO.HIGH)
         
-            if X and not Y and not Z:
+            if GPIO.input(self.activePlayer[0]) is 1 and GPIO.input(self.activePlayer[1]) is 0 and GPIO.input(self.activePlayer[2]) is 0:
                 GPIO.output("P8_11", GPIO.LOW)
                 return 'H'
-            elif not X and Y and not Z:
+            elif GPIO.input(self.activePlayer[0]) is 0 and GPIO.input(self.activePlayer[1]) is 1 and GPIO.input(self.activePlayer[2]) is 0:
                 GPIO.output("P8_11", GPIO.LOW)
                 return 'S'
-            elif X and Y and not Z:
+            elif GPIO.input(self.activePlayer[0]) is 0 and GPIO.input(self.activePlayer[1]) is 0 and GPIO.input(self.activePlayer[2]) is 1:
                 GPIO.output("P8_11", GPIO.LOW)
                 return 'D'
-            elif not X and not Y and Z:
+            elif GPIO.input(self.activePlayer[0]) is 1 and GPIO.input(self.activePlayer[1]) is 1 and GPIO.input(self.activePlayer[2]) is 0:
                 GPIO.output("P8_11", GPIO.LOW)
                 return 'C'
-            elif X and not Y and Z:
+            elif GPIO.input(self.activePlayer[0]) is 1 and GPIO.input(self.activePlayer[1]) is 0 and GPIO.input(self.activePlayer[2]) is 1:
                 GPIO.output("P8_11", GPIO.LOW)
-                return 'P'
-            elif not X and Y and Z:
+                return 'N'
+            elif GPIO.input(self.activePlayer[0]) is 0 and GPIO.input(self.activePlayer[1]) is 1 and GPIO.input(self.activePlayer[2]) is 1:
                 GPIO.output("P8_11", GPIO.LOW)
-                return 'A'
-        
+                return 'Y'
+                
             GPIO.output("P8_11", GPIO.LOW)
 
 

@@ -25,13 +25,39 @@ print('Found PN532 with firmware version: {0}.{1}'.format(ver, rev))
 
 #configure
 pn532.SAM_configuration()
+
+#get cards unique ID
+def getUID():
+    print("Reading UID.....")
+    while True:
+        uid = pn532.read_passive_target()
+        
+        if uid is not None:
+            print("UID Read succesful")
+            return uid
+                
+#get cards data
+def getData(uid):
+    print("Reading Data.....")
+    while True:
+        if not pn532.mifare_classic_authenticate_block(uid, 4, PN532.MIFARE_CMD_AUTH_B, [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]):
+            print("Failed to authenticate block 4!")
+        
+        data = pn532.mifare_classic_read_block(4)
+
+        if data is not None:
+            #return data as an array data[2] = val data[3] = suit
+            print("data read successful")
+            return data
+        else:
+            uid = getUID()
     
 class Cards():
     #initialize a card
     def __init__(self):
         #get data and UID
-        self.getUID()
-        self.getData()
+        self.uid = getUID()
+        self.data = getData(self.uid)
         #get suit
         self.suit = suitsArray[self.data[3]]
         #get card val
@@ -50,33 +76,6 @@ class Cards():
         else:
             self.val = '0'
             
-    #get cards unique ID
-    def getUID(self):
-        print("Reading UID.....")
-        while True:
-            Tempuid = pn532.read_passive_target()
-        
-            if Tempuid is not None:
-                print("UID Read succesful")
-                self.uid = Tempuid
-                return
-                
-    #get cards data
-    def getData(self):
-        print("Reading Data.....")
-        while True:
-            if not pn532.mifare_classic_authenticate_block(self.uid, 4, PN532.MIFARE_CMD_AUTH_B, [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]):
-                print("Failed to authenticate block 4!")
-        
-            Tempdata = pn532.mifare_classic_read_block(4)
-
-            if Tempdata is not None:
-                #return data as an array data[2] = val data[3] = suit
-                print("data read successful")
-                self.data = Tempdata
-                return
-            else:
-                self.getUID()
             
             
             
