@@ -3,7 +3,7 @@ import Adafruit_BBIO.GPIO as GPIO
 #TODO avoid using predesignated pins
 GPIO.setup("P8_11", GPIO.OUT)                             #Clock
 GPIO.setup("P8_12", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #P1 X
-GPIO.setup("P8_44", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Y
+GPIO.setup("P8_43", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Y
 GPIO.setup("P8_14", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Z
 GPIO.setup("P8_15", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #P2 X
 GPIO.setup("P8_43", GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  #Y
@@ -25,7 +25,7 @@ GPIO.setup("P9_30", GPIO.OUT)                             #P4 Deal
 GPIO.setup("P9_31", GPIO.OUT)				  #Extra
 
 #Player 1 ans
-P1Ans = ["P8_12", "P8_44", "P8_14"]
+P1Ans = ["P8_12", "P8_43", "P8_14"]
 #Player 2 Col
 P2Ans = ["P8_15", "P8_43", "P8_17"]
 #Player 3 Col
