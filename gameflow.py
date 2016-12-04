@@ -98,32 +98,31 @@ def reset(gameState, teams, players):
 #??? TODO
 def scanPlay(gameState, teams, players):
         #SCANS card
-        test = True
-        while test is True:
-            uid = getUID()
-            data = getData(uid)
-            test = compareHand(gameState, players, uid)
-            if test is False:
-                msg1 = "Invalid card"
-                msg2 = "Rescan..."
-                printDisplay(gameState, msg1, msg2, dummy, players)
-                time.sleep(3)
-                scanPlay(gameState, teams, players) 
+        #test = True
+        uid = getUID()
+        data = getData(uid)
+        #test = compareHand(gameState, players, uid)
+        #if test is False:
+            #msg1 = "Invalid card"
+            #msg2 = "Rescan..."
+            #printDisplay(gameState, msg1, msg2, dummy, players)
+            #time.sleep(1)
+            #scanPlay(gameState, teams, players) 
         x = Cards() #TODO
         if gameState.leadTurn is True:
-            updateRoundHand(x)
+            gameState.roundHand(x)
             gameState.setLead(x.suit)
             gameState.setleadTurn(False)
             msg1 = "** was played"
             msg2 = "Continue..."
-            printAll(msg1, msg2, [x.suit, x.val], disp)
-            time.sleep(2)
+            printAll(msg1, msg2, [x.suit, x.val], players)
+            time.sleep(1)
         else:
-            updateRoundHand(x)
+            gameState.roundHand(x)
             msg1 = "** was played"
             msg2 = "Continue..."
-            printAll(msg1, msg2, [x.suit, x.val], disp)
-            time.sleep(2)
+            printAll(msg1, msg2, [x.suit, x.val], players)
+            time.sleep(1)
 
 def scanStart():
     uid = getUID()
@@ -132,19 +131,17 @@ def scanStart():
 
 #TODO either get data or create card not both
 def scan(gameState, players):
-    for player in players:
-        uid = getUID()
-        i = 0
-        for card in players[gameState.turn-1].hand:
-            if players[gameState.turn-1].hand[i].uid is uid:
-                Confmsg1 = "Card exists"
-                Confmsg2 = "Try again"
-                printDisplay(gameState, msg1, msg2, dummy, players)
-                time.sleep(3)
-            else:
-                x = Cards()
-                players[gameState.turn-1].handAppend(x)
-            i = i + 1
+    uid = getUID()
+    for card in players[gameState.turn-1].hand:
+        if players[gameState.turn-1].hand[i].uid is uid:
+            msg1 = "Card exists"
+            msg2 = "Try again"
+            printDisplay(gameState, msg1, msg2, dummy, players)
+            time.sleep(1)
+            scan(gameState, players)   
+    x = Cards()
+    players[gameState.turn-1].handAppend(x)
+      
 
 #TODO update for player class
 def printDisplay(gameState, msg1, msg2, arr, players):
@@ -172,77 +169,83 @@ def playerConfirm(gameState, msg1, msg2, arr, players, resp):
         Confmsg1 = "Are you sure?"
         Confmsg2 = "Y/n"
         printDisplay(gameState, Confmsg1, Confmsg2, dummy, players)
-        time.sleep(2)
+        time.sleep(1)
         if players[gameState.turn-1].keypad.getResponse() is 10: #N
-            time.sleep(3)
+            time.sleep(1)
             printDisplay(gameState, msg1, msg2, arr, players)
             resp = players[gameState.turn-1].keypad.getResponse()
-            time.sleep(3)
+            time.sleep(1)
         elif players[gameState.turn-1].keypad.getResponse() is 9: #Y
-            time.sleep(3)
+            time.sleep(1)
             return resp
 
 #TODO update for player class/fix in general
-def readKey(i, disp, keys):
+def readKey(i, players, keys):
     response = keys[i-1].getResponse()
     return response
 
 #TODO update for player class
 def compareSuit(num, gameState, teams, players):
+    i = 0
     if gameState.roundHand[-1].suit is not gameState.lead:
         if num is 1:
             for Cards in players[0].hand:
-                if players[0].hand[Cards].suit is gameState.lead:
+                if players[0].hand[i].suit is gameState.lead:
                     gameState.renigA = True
                     msg1 = "Player 1"
                     msg2 = "Renig"
-                    printAll(msg1, msg2, dummy, disp)
-                    time.sleep(3)
+                    printAll(msg1, msg2, dummy, players)
+                    time.sleep(2)
+                i = i + 1
         elif num is 2:
             for Cards in players[1].hand:
-                if players[1].hand[Cards].suit is gameState.lead:
+                if players[1].hand[i].suit is gameState.lead:
                     gameState.renigB = True
                     msg1 = "Player 2"
                     msg2 = "Renig"
-                    printAll(msg1, msg2, dummy, disp)
-                    time.sleep(3)
+                    printAll(msg1, msg2, dummy, players)
+                    time.sleep(2)
+                i = i + 1
         elif num is 3:
             for Cards in players[2].hand:
-                if players[2].hand[Cards].suit is gameState.lead:
+                if players[2].hand[i].suit is gameState.lead:
                     gameState.renigA = True
                     msg1 = "Player 3"
                     msg2 = "Renig"
-                    printAll(msg1, msg2, dummy, disp)
-                    time.sleep(3)
+                    printAll(msg1, msg2, dummy, players)
+                    time.sleep(2)
+                i = i + 1
         else:
             for Cards in players[3].hand:
-                if players[3].hand[Cards].suit is gameState.lead:
+                if players[3].hand[i].suit is gameState.lead:
                     gameState.renigB = True
                     msg1 = "Player 4"
                     msg2 = "Renig"
-                    printAll(msg1, msg2, dummy, disp)
-                    time.sleep(3)
+                    printAll(msg1, msg2, dummy, players)
+                    time.sleep(2)
+                i = i + 1
 
 #TODO update for player class/check logic
 def compareHand(gameState, players, uid):
+    i = 0
     if gameState.turn is 1:
-        for Cards in players[0].hand:
-            if uid is players[0].hand[Cards].uid:
+        for i in players[0].hand:
+            if uid is players[0].hand[i].uid:
                 return True
         return False
     elif gameState.turn is 2:
-        for Cards in players[1].hand:
-            if uid is players[1].hand[Cards].uid:
+        for i in players[1].hand:
+            if uid is players[1].hand[i].uid:
                 return True
         return False
     elif gameState.turn is 3:
-        for Cards in players[2].hand:
-            if uid is players[2].hand[Cards].uid:
+        for i in players[2].hand:
+            if uid is players[2].hand[i].uid:
                 return True
         return False
     else:
-        for Cards in players[3].hand:
-            if uid is players[3].hand[Cards].uid:
+        for i in players[3].hand:
+            if uid is players[3].hand[i].uid:
                 return True
         return False
 
@@ -257,14 +260,16 @@ def scanHands(gameState, players):
         msg1 = "Player {}".format(gameState.turn)
         msg2 = "Scan Cards"
         printDisplay(gameState, msg1, msg2, dummy, players)
-        time.sleep(2)
+        time.sleep(1)
 
         for k in range(5):
+            uid = getUID()
+            data = getData(uid)
             scan(gameState, players)
-            msg1 = "Next Card".format(gameState.turn)
-            msg2 = ""
+            msg1 = "Player {}".format(gameState.turn)
+            msg2 = "Cards Scanned {}".format(k+1)
             printDisplay(gameState, msg1, msg2, dummy, players)
-            time.sleep(2)
+            time.sleep(1)
 
         gameState.incTurn()
 
@@ -284,7 +289,7 @@ def playRound(gameState, teams, players):
             msg1 = "Play Card"
             msg2 = "For Turn"
             printDisplay(gameState, msg1, msg2, dummy, players)
-            time.sleep(2)
+            time.sleep(1)
             checkHint(players, gameState)
             gameState.setRoundPlay(True)
 
@@ -292,15 +297,16 @@ def playRound(gameState, teams, players):
                 msg1 = "Lead with High"
                 msg2 = "OffSuit"
                 printDisplay(gameState, msg1, msg2, dummy, players)
-                time.sleep(2)
+                time.sleep(1)
                 gameState.setleadTurn(True)
 
             scanPlay(gameState, teams, players)
-            compareSuit(num+1, gameState, teams, players)
+            #compareSuit(gameState.turn, gameState, teams, players)
         scoreRound(gameState, teams, players)
-        if endGame is True:
+        if gameState.endGame is True:
                 break
         gameState.incTurn()
+        callPass(gameState, teams, players)
 
 def printHint(gameState, players, hint):
     if hint is 1:
@@ -315,7 +321,7 @@ def printHint(gameState, players, hint):
         msg1 = "Play Low"
         msg2 = "OffSuit"
         printDisplay(gameState, msg1, msg2, dummy, players)
-    time.sleep(2)
+    time.sleep(1)
 
 def checkHint(players, gameState):
     hint = 0
@@ -339,13 +345,13 @@ def convertInt(gameState, val, suit):
     elif val is 'T':
         intVal = 2
     elif val is 'J':
-        intVal is 3
+        intVal = 3
     elif val is 'Q':
-        intVal is 4
+        intVal = 4
     elif val is 'K':
-        intVal is 5
+        intVal = 5
     else:
-        intVal is 6
+        intVal = 6
     return adjustVal(gameState, intVal, suit)
 
 def adjustVal(gameState, intVal, suit):
@@ -403,53 +409,65 @@ def playAlone(loner, gameState, teams, players):
                 msg1 = "Play Card"
                 msg2 = "For Turn"
                 printDisplay(gameState, msg1, msg2, dummy, players)
-                time.sleep(2)
+                time.sleep(1)
                 gameState.setRoundPlay(True)
+                checkHint(players, gameState)
+                time.sleep(1)
 
                 t = t + 1
 
                 if t is 1:
                     gameState.setleadTurn(True)
                 scanPlay(gameState, teams, players)
-                compareSuit(num+1, gameState, teams, players)
+                #compareSuit(gameState.turn, gameState, teams, players)
         scoreRound(gameState, teams, players)
-        if endGame is True:
+        if gameState.endGame is True:
             break
         gameState.incTurn()
+        callPass(gameState, teams, players)
 
 #TODO confused
 def compareVal(gameState):
+    i = 0
     for Cards in gameState.roundHand:
-        max = convertVal(gameState, gameState.roundHand[-1].val, gameState.roundHand[-1].suit)
+        max = convertInt(gameState, gameState.roundHand[-1].val, gameState.roundHand[-1].suit)
         retMax = gameState.roundHand[-1].uid
-        while Cards > 1:
-            if convertVal(gameState, gameState.roundHand[Cards].val, gameState.roundHand[Cards].suit) > max:
-                max = convertVal(gameState, gameState.roundHand[Cards].val, gameState.roundHand[Cards].suit)
-                retMax = gameState.roundHand[-1].uid
+        if len(gameState.roundHand) > 1:
+            if convertInt(gameState, gameState.roundHand[i].val, gameState.roundHand[i].suit) > max:
+                max = convertInt(gameState, gameState.roundHand[i].val, gameState.roundHand[i].suit)
+                retMax = gameState.roundHand[i].uid
+        i = i + 1
+        
     return retMax
 
 #TODO is it needed?
 def checkHand(max, teams, players):
+    i = 0
     for Cards in players[0].hand:
-        if players[0].hand[Cards].uid is max:
+        if players[0].hand[i].uid is max:
             return 1
     for Cards in players[1].hand:
-        if players[1].hand[Cards].uid is max:
+        if players[1].hand[i].uid is max:
             return 2
     for Cards in players[2].hand:
-        if players[2].hand[Cards].uid is max:
+        if players[2].hand[i].uid is max:
             return 1
     for Cards in players[3].hand:
-        if players[3].hand[Cards].uid is max:
+        if players[3].hand[i].uid is max:
             return 2
-            teams[1].updateTricks()
 
 #TODO Double check teams and how renig score works
 def awardTrick(teamTrick, teams):
     if teamTrick is 1:
         teams[0].updateTricks()
+        msg1 = "Team A Takes"
+        msg2 = "The Trick"
+        printAll(msg1, msg2, dummy, players)
     else:
         teams[1].updateTricks()
+        msg1 = "Team B Takes"
+        msg2 = "The Trick"
+        printAll(msg1, msg2, dummy, players)
 
 #TODO move renig checks into this func
 def checkScore(gameState, teams):
@@ -485,13 +503,18 @@ def checkScore(gameState, teams):
 
 #TODO double check deletion and logic
 def scoreRound(gameState, teams, players):
+    i = 0
+    j = 0
     for Cards in gameState.roundHand:
-        if gameState.roundHand[Cards].suit is not gameState.lead and gameState.roundHand[Cards].suit is not gameState.trump:
-            del gameState.roundHand[Cards]
-        elif gameState.roundHand[Cards].suit is gameState.trump:
-            for Cards in gameState.roundHand:
-                if gameState.roundHand[Cards].suit is not gameState.trump:
-                    del gameState.roundHand[Cards]
+        if gameState.roundHand[i].suit is not gameState.lead: 
+            if gameState.roundHand[i].suit is not gameState.trump:
+                del gameState.roundHand[i]
+            elif gameState.roundHand[i].suit is gameState.trump:
+                for Cards in gameState.roundHand:
+                    if gameState.roundHand[j].suit is not gameState.trump:
+                        del gameState.roundHand[j]
+                    j = j + 1
+        i = i + 1
 
     teamTrick = checkHand(compareVal(gameState), teams, players)
     awardTrick(teamTrick, teams)
@@ -514,13 +537,16 @@ def callPass(gameState, teams, players):
                 msg2 = "or Pass(N)"
                 printDisplay(gameState, msg1, msg2, dummy, players)
                 resp = players[gameState.turn-1].keypad.getResponse()
-                time.sleep(3)
-                confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
+                time.sleep(0.5)
+                confResp = 1
+                if resp is not 9:
+                    if resp is not 10:
+                        confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
                 if confResp is 9: #Y
                     msg1 = "Pick up card"
                     msg2 = "and scan"
                     printDisplay(gameState, msg1, msg2, dummy, players)
-                    time.sleep(2)
+                    time.sleep(0.5)
                     gameState.setTrump(scanStart())
 
                     msg1 = "Trump is *"
@@ -536,16 +562,17 @@ def callPass(gameState, teams, players):
                 msg2 = "or Pass(N)"
                 printDisplay(gameState, msg1, msg2, dummy, players)
                 resp = players[gameState.turn-1].keypad.getResponse()
-                time.sleep(3)
+                time.sleep(0.5)
                 confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
-                if confResp is not 9 and not 10: #Y/N
-                    gameState.trump = suitsArray[confResp]
-                    msg1 = "Trump is *"
-                    msg2 = ""
-                    printAll(msg1, msg2, [gameState.trump], players)
-                    time.sleep(2)
-                    break
-                elif confResp is not 9: #Y
+                if confResp is not 10: #N
+                    if confResp is not 9: #Y
+                        gameState.trump = suitsArray[confResp]
+                        msg1 = "Trump is *"
+                        msg2 = ""
+                        printAll(msg1, msg2, [gameState.trump], players)
+                        time.sleep(2)
+                        break
+                else: 
                     break
 
         if confResp is not 10: #N
@@ -554,7 +581,7 @@ def callPass(gameState, teams, players):
             printDisplay(gameState, msg1, msg2, dummy, players)
 
             resp = players[gameState.turn-1].keypad.getResponse()
-            time.sleep(3)
+            time.sleep(1)
             confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
 
             teams[(gameState.turn-1)%2].updateCalled(True)
@@ -579,13 +606,16 @@ def callPass(gameState, teams, players):
                     msg2 = "or Pass(N)"
                     printDisplay(gameState, msg1, msg2, dummy, players)
                     resp = players[gameState.turn-1].keypad.getResponse()
-                    time.sleep(3)
-                    confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
+                    time.sleep(1)
+                    confResp = 1
+                    if resp is not 9:
+                        if resp is not 10:
+                            confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
                     if confResp is 9: #Y
                         msg1 = "Pick up card"
                         msg2 = "and scan"
                         printDisplay(gameState, msg1, msg2, dummy, players)
-                        time.sleep(2)
+                        time.sleep(1)
                         gameState.setTrump(scanStart())
 
                         msg1 = "Trump is *"
@@ -601,16 +631,17 @@ def callPass(gameState, teams, players):
                     msg2 = "or Pass(N)"
                     printDisplay(gameState, msg1, msg2, dummy, players)
                     resp = players[gameState.turn-1].keypad.getResponse()
-                    time.sleep(3)
+                    time.sleep(1)
                     confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
-                    if confResp is not 9 and not 10: #Y/N
-                        gameState.trump = suitsArray[confResp]
-                        msg1 = "Trump is *"
-                        msg2 = ""
-                        printAll(msg1, msg2, [gameState.trump], players)
-                        time.sleep(2)
-                        break
-                    elif confResp is not 9: #Y
+                    if confResp is not 10: #N
+                        if confResp is not 9: #Y
+                            gameState.trump = suitsArray[confResp]
+                            msg1 = "Trump is *"
+                            msg2 = ""
+                            printAll(msg1, msg2, [gameState.trump], players)
+                            time.sleep(2)
+                            break
+                    else: 
                         break
 
             if confResp is not 10: #N
@@ -619,7 +650,7 @@ def callPass(gameState, teams, players):
                 printDisplay(gameState, msg1, msg2, dummy, players)
 
                 resp = players[gameState.turn-1].keypad.getResponse()
-                time.sleep(3)
+                time.sleep(1)
                 confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
 
                 teams[(gameState.turn-1)%2].updateCalled(True)
@@ -635,7 +666,7 @@ def callPass(gameState, teams, players):
                 msg1 = "Wait..."
                 msg2 = ""
                 printAll(msg1, msg2, dummy, players)
-                time.sleep(3)
+                time.sleep(2)
 
                 if i is 0:
                     while True:
@@ -643,13 +674,16 @@ def callPass(gameState, teams, players):
                         msg2 = "or Pass(N)"
                         printDisplay(gameState, msg1, msg2, dummy, players)
                         resp = players[gameState.turn-1].keypad.getResponse()
-                        time.sleep(3)
-                        confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
+                        time.sleep(1)
+                        confResp = 1
+                        if resp is not 9:
+                            if resp is not 10:
+                                confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
                         if confResp is 9: #Y
                             msg1 = "Pick up card"
                             msg2 = "and scan"
                             printDisplay(gameState, msg1, msg2, dummy, players)
-                            time.sleep(2)
+                            time.sleep(1)
                             gameState.setTrump(scanStart())
 
                             msg1 = "Trump is *"
@@ -665,16 +699,17 @@ def callPass(gameState, teams, players):
                         msg2 = "or Pass(N)"
                         printDisplay(gameState, msg1, msg2, dummy, players)
                         resp = players[gameState.turn-1].keypad.getResponse()
-                        time.sleep(3)
+                        time.sleep(1)
                         confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
-                        if confResp is not 9 and not 10: #Y/N
-                            gameState.trump = suitsArray[confResp]
-                            msg1 = "Trump is *"
-                            msg2 = ""
-                            printAll(msg1, msg2, [gameState.trump], players)
-                            time.sleep(2)
-                            break
-                        elif confResp is not 9: #Y
+                        if confResp is not 10: #N
+                            if confResp is not 9: #Y
+                                gameState.trump = suitsArray[confResp]
+                                msg1 = "Trump is *"
+                                msg2 = ""
+                                printAll(msg1, msg2, [gameState.trump], players)
+                                time.sleep(2)
+                                break
+                        else: 
                             break
 
                 if confResp is not 10: #N
@@ -683,7 +718,7 @@ def callPass(gameState, teams, players):
                     printDisplay(gameState, msg1, msg2, dummy, players)
 
                     resp = players[gameState.turn-1].keypad.getResponse()
-                    time.sleep(3)
+                    time.sleep(1)
                     confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
 
                     teams[(gameState.turn-1)%2].updateCalled(True)
@@ -708,13 +743,16 @@ def callPass(gameState, teams, players):
                             msg2 = "or Pass(N)"
                             printDisplay(gameState, msg1, msg2, dummy, players)
                             resp = players[gameState.turn-1].keypad.getResponse()
-                            time.sleep(3)
-                            confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
+                            time.sleep(1)
+                            confResp = 1
+                            if resp is not 9:
+                                if resp is not 10:
+                                    confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
                             if confResp is 9: #Y
                                 msg1 = "Pick up card"
                                 msg2 = "and scan"
                                 printDisplay(gameState, msg1, msg2, dummy, players)
-                                time.sleep(2)
+                                time.sleep(1)
                                 gameState.setTrump(scanStart())
 
                                 msg1 = "Trump is *"
@@ -730,17 +768,19 @@ def callPass(gameState, teams, players):
                             msg2 = ""
                             printDisplay(gameState, msg1, msg2, dummy, players)
                             resp = players[gameState.turn-1].keypad.getResponse()
-                            time.sleep(3)
-                            confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
-                            if confResp is not 9 and not 10: #Y/N
-                                gameState.trump = suitsArray[confResp]
-                                msg1 = "Trump is *"
-                                msg2 = ""
-                                printAll(msg1, msg2, [gameState.trump], players)
-                                time.sleep(2)
-                                break
-                            elif confResp is not 9: #Y
-                                break
+                            time.sleep(1)
+                            confresp = 10
+                            if resp is not 9:
+                                if resp is not 10:
+                                    confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
+                            if confResp is not 10: #N
+                                if confResp is not 9: #Y
+                                    gameState.trump = suitsArray[confResp]
+                                    msg1 = "Trump is *"
+                                    msg2 = ""
+                                    printAll(msg1, msg2, [gameState.trump], players)
+                                    time.sleep(2)
+                                    break
 
                     if confResp is not 10: #N
                         msg1 = "Alone?(Y/n)"
@@ -748,7 +788,7 @@ def callPass(gameState, teams, players):
                         printDisplay(gameState, msg1, msg2, dummy, players)
 
                         resp = players[gameState.turn-1].keypad.getResponse()
-                        time.sleep(3)
+                        time.sleep(1)
                         confResp = playerConfirm(gameState, msg1, msg2, dummy, players, resp)
 
                         teams[(gameState.turn-1)%2].updateCalled(True)
@@ -770,7 +810,7 @@ def dealRound(gameState, players):
     printDisplay(gameState, msg1, msg2, dummy, players)
     while True:
         if players[i-1].keypad.getResponse() is 9: #Y
-        time.sleep(2)
+            time.sleep(1)
             return
 
 
@@ -778,14 +818,14 @@ def clear(gameState, players):
     gameState.clearRoundHand()
     for i in range(len(players)):
         players[i].handClear()
-    self.roundPlay = False
-    self.leadTurn = False
-    self.turn = 1
-    self.lead = suitsArray[0]
-    self.trump = suitsArray[0]
-    self.renigA = False
-    self.renigB = False
-    self.endGame = False
+    gameState.roundPlay = False
+    gameState.leadTurn = False
+    gameState.turn = 1
+    gameState.lead = suitsArray[0]
+    gameState.trump = suitsArray[0]
+    gameState.renigA = False
+    gameState.renigB = False
+    gameState.endGame = False
 
 #main game
 def main(gameState, teams, players):
@@ -794,6 +834,7 @@ def main(gameState, teams, players):
         #default player 1 deal
         dealRound(gameState, players)
         gameState.setTurn(gameState.deal)
+        #callPass vs Main loop
         callPass(gameState, teams, players) 
         clear(gameState, players) 
         if teams[0].score >= 10:
@@ -810,7 +851,7 @@ def main(gameState, teams, players):
             msg1 = "Next Deal"
             msg2 = "Continue..."
             printAll(msg1, msg2, dummy, players)
-            time.sleep(3)
+            time.sleep(1)
             reset(gameState, teams, players)
             gameState.incDeal()
 
@@ -818,13 +859,21 @@ if __name__ == '__main__':
     gameState =  gameState()
 
     P1 = player(1, I2C_ADP1, 1)
-    players = [P1]
+    P2 = player(1, I2C_ADP2, 1)
+    P3 = player(1, I2C_ADP3, 1)
+    P4 = player(1, I2C_ADP4, 1)
+    players = [P1, P2, P3, P4]
 
     ATeam = Team()
-    teams = [ATeam]
+    BTeam = Team()
+    teams = [ATeam, BTeam]
+    
 try:
     main(gameState, teams, players)
 except KeyboardInterrupt:
     pass
 finally:
     P1.lcd.lcd_byte(0x01, LCD_CMD)
+    P2.lcd.lcd_byte(0x01, LCD_CMD)
+    P3.lcd.lcd_byte(0x01, LCD_CMD)
+    P4.lcd.lcd_byte(0x01, LCD_CMD)
